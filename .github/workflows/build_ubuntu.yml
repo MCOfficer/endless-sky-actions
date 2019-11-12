@@ -1,0 +1,21 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Get Packages
+      uses: mstksg/get-package@v1
+      with:
+        apt-get: g++ scons libsdl2-dev libpng-dev libjpeg-turbo8-dev libgl1-mesa-dev libglew-dev libopenal-dev libmad0-dev
+    - name: scons install
+      run: scons -j $(nproc)
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky
+        path: endless-sky
