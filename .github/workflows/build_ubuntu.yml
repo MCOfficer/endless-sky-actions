@@ -12,9 +12,27 @@ jobs:
       uses: mstksg/get-package@v1
       with:
         apt-get: g++ scons libsdl2-dev libpng-dev libjpeg-turbo8-dev libgl1-mesa-dev libglew-dev libopenal-dev libmad0-dev
-    - name: scons install
+
+    - name: scons build
       run: scons -j $(nproc)
     - uses: actions/upload-artifact@master
       with:
         name: endless-sky
         path: endless-sky
+
+    - name: scons install
+      run: scons -j $(nproc) install DESTDIR=AppDir
+    - name: correct absolute paths
+      run: sed -i -e 's#/usr#././#g' AppDir/usr/local/games/endless-sky
+    - name: prepare icon
+      run: mv icons/icon_512x512.png endless-sky.png
+    - name: download linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O linuxdeploy && chmod +x linuxdeploy
+    - name: create appimage
+      run: ./linuxdeploy --appdir AppDir -d endless-sky.desktop -i endless-sky.png -e AppDir/usr/local/games/endless-sky --output appimage
+    - name: rename appimage
+      run: mv Endless_Sky*.AppImage EndlessSky.AppImage
+    - uses: actions/upload-artifact@master
+      with:
+        name: EndlessSky.AppImage
+        path: EndlessSky.AppImage
