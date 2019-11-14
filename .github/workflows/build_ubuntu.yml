@@ -36,5 +36,5 @@ jobs:
       run: readelf -d EndlessSky.AppImage
     - uses: actions/upload-artifact@master
       with:
-        name: EndlessSky.AppImage
+        name: EndlessSky.AppImage.zip
         path: EndlessSky.AppImage
