@@ -22,8 +22,8 @@ jobs:
 
     - name: scons install
       run: scons -j $(nproc) install DESTDIR=AppDir
-#    - name: correct absolute paths
-#      run: sed -i -e 's#/usr#././#g' AppDir/usr/local/games/endless-sky 
+    - name: correct absolute paths
+      run: sed -i -e 's#/usr#././#g' AppDir/usr/local/games/endless-sky 
     - name: prepare icon
       run: mv icons/icon_512x512.png endless-sky.png
     - name: download linuxdeploy
