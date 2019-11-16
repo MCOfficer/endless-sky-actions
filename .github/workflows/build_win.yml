@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: fetch development libraries
+      run: | 
+        Invoke-WebRequest https://endless-sky.github.io/win64-dev.zip -OutFile win64-dev.zip
+        Expand-Archive win64-dev.zip -DestinationPath . -Force
+        Remove-Item win64-dev.zip
+      shell: powershell
+    - name: adjust DIR_ESLIB
+      run: (Get-Content .winmake) -replace '^DIR_ESLIB \?= .*$', 'DIR_ESLIB ?= .\dev64' |  Out-File .winmake
+      shell: powershell
+    - name: test
+      run: where.exe g++
