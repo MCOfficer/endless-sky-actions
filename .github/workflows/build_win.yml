@@ -1,10 +1,10 @@
-name: Build - Ubuntu 18.04
+name: Build - Windows 2019
 on: [push]
 
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: windows-2019
     
     steps:
     - uses: actions/checkout@v1
