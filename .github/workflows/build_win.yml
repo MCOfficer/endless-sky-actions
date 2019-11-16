@@ -20,7 +20,7 @@ jobs:
     - name: fetch mingw-w64
       run: | 
         Invoke-WebRequest https://cfhcable.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z -OutFile mingw.zip
-        Expand-Archive mingw.zip -DestinationPath . -Force
+        7z x mingw.zip
         Remove-Item mingw.zip
       shell: powershell
     - name: adjust DIR_MINGW64
