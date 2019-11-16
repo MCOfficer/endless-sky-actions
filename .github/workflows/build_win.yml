@@ -1,5 +1,4 @@
-name: CI
-
+name: Build - Ubuntu 18.04
 on: [push]
 
 jobs:
@@ -16,7 +15,14 @@ jobs:
         Remove-Item win64-dev.zip
       shell: powershell
     - name: adjust DIR_ESLIB
-      run: (Get-Content .winmake) -replace '^DIR_ESLIB \?= .*$', 'DIR_ESLIB ?= .\dev64' |  Out-File .winmake
+      run: (Get-Content .winmake) -replace '^DIR_ESLIB \?=.*$', 'DIR_ESLIB ?= .\dev64' |  Out-File .winmake
       shell: powershell
-    - name: test
-      run: where.exe g++
+    - name: fetch mingw-w64
+      run: | 
+        Invoke-WebRequest https://cfhcable.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z -OutFile mingw.zip
+        Expand-Archive mingw.zip -DestinationPath . -Force
+        Remove-Item mingw.zip
+      shell: powershell
+    - name: adjust DIR_MINGW64
+      run: (Get-Content .winmake) -replace '^DIR_MINGW64 \?=.*$', 'DIR_MINGW64 ?= .\mingw64\x86_64-w64-mingw32' | Out-File .winmake
+      shell: powershell
