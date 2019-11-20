@@ -25,15 +25,13 @@ jobs:
     - name: correct absolute paths
       run: sed -i -e 's#/usr#././#g' AppDir/usr/local/games/endless-sky 
     - name: prepare icon
-      run: mv icons/icon_512x512.png endless-sky.png
+      run: cp icons/icon_512x512.png endless-sky.png
     - name: download linuxdeploy
       run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O linuxdeploy && chmod +x linuxdeploy
     - name: create appimage
       run: ./linuxdeploy --appdir AppDir -d endless-sky.desktop -i endless-sky.png -e AppDir/usr/local/games/endless-sky --output appimage
     - name: rename appimage
       run: mv Endless_Sky*.AppImage EndlessSky.AppImage
-    - name: elftool
-      run: readelf -d EndlessSky.AppImage
     - uses: actions/upload-artifact@master
       with:
         name: EndlessSky.AppImage.zip
