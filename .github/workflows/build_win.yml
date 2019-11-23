@@ -24,7 +24,7 @@ jobs:
         Remove-Item mingw.7z
       shell: powershell
     - name: adjust DIR_MINGW64
-      run: (Get-Content .winmake) -replace '^DIR_MINGW64 \?=.*$', 'DIR_MINGW64 ?= .\mingw64\x86_64-w64-mingw32' | Out-File .winmake
+      run: (Get-Content .winmake) -replace '^DIR_MINGW64 \?=.*$', 'DIR_MINGW64 ?= .\mingw64\x86_64-w64-mingw32' | Out-File -Encoding UTF8 .winmake
       shell: powershell
     - name: compile
       run: |
