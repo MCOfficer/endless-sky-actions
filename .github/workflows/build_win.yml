@@ -28,8 +28,8 @@ jobs:
       shell: powershell
     - name: adjust version numbers
       run: |
-        (Get-Content source\main.cpp) -replace 'Endless Sky [\d.]+', "Endless Sky Nightly at $GITHUB_SHA" | Out-File -Encoding UTF8 source\main.cpp
-        (Get-Content credits.txt) -replace 'version [\d.]+', "version nightly-$GITHUB_SHA" | Out-File -Encoding UTF8 credits.txt
+        (Get-Content source\main.cpp) -replace 'Endless Sky [\d.]+', "Endless Sky Nightly at $env:GITHUB_SHA" | Out-File -Encoding UTF8 source\main.cpp
+        (Get-Content credits.txt) -replace 'version [\d.]+', "version nightly-$env:GITHUB_SHA" | Out-File -Encoding UTF8 credits.txt
       shell: powershell
     - name: compile
       run: |
