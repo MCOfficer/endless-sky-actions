@@ -26,12 +26,27 @@ jobs:
     - name: adjust DIR_MINGW64
       run: (Get-Content .winmake) -replace '^DIR_MINGW64 \?=.*$', 'DIR_MINGW64 ?= .\mingw64\x86_64-w64-mingw32' | Out-File -Encoding UTF8 .winmake
       shell: powershell
+    - name: adjust version numbers
+      run: |
+        (Get-Content source\main.cpp) -replace 'Endless Sky [\d.]+', "Endless Sky Nightly at $GITHUB_SHA" | Out-File -Encoding UTF8 source\main.cpp
+        (Get-Content credits.txt) -replace 'version [\d.]+', "version nightly-$GITHUB_SHA" | Out-File -Encoding UTF8 source\main.cpp
+      shell: powershell
     - name: compile
       run: |
         $ENV:PATH=".\mingw64\bin;$ENV:PATH"
         mingw32-make -f .winmake -j ($(Get-CIMInstance -Class 'CIM_Processor').NumberOfLogicalProcessors) dist
+        COPY .\bin\pkgd\EndlessSky.exe EndlessSky.exe
       shell: powershell
     - uses: actions/upload-artifact@master
       with:
         name: EndlessSky.exe
-        path: bin\pkgd\EndlessSky.exe
+        path: EndlessSky.exe
+    - name: package
+      run: |
+        COPY .\dev64\bin\* .
+         7z a endless-sky-win64-nightly.zip .\sounds\ .\images\ .\data\ *.dll license.txt keys.txt icon.png EndlessSky.exe credits.txt copyright changelog
+      shell: powershell
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky-win64-nightly.zip
+        path: endless-sky-win64-nightly.zip
