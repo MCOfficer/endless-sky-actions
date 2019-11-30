@@ -19,6 +19,13 @@ jobs:
       with:
         name: endless-sky
         path: endless-sky
+      
+    - name: package
+      run: tar -czf endless-sky-amd64-nightly.tar.gz sounds images/ data/ license.txt keys.txt icon.png endless-sky credits.txt copyright changelog
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky-amd64-nightly.tar.gz
+        path: endless-sky-amd64-nightly.tar.gz
 
     - name: scons install
       run: scons -j $(nproc) install DESTDIR=AppDir
