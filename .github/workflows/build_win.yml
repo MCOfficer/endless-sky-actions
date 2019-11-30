@@ -2,10 +2,8 @@ name: Build - Windows 2019
 on: [push]
 
 jobs:
-  build:
-
+  build_win:
     runs-on: windows-2019
-    
     steps:
     - uses: actions/checkout@v1
     - name: fetch development libraries
@@ -48,6 +46,46 @@ jobs:
         COPY .\mingw64\x86_64-w64-mingw32\lib\libstdc++-6.dll .
          7z a endless-sky-win64-nightly.zip .\sounds\ .\images\ .\data\ *.dll license.txt keys.txt icon.png EndlessSky.exe credits.txt copyright changelog
       shell: powershell
+
+  build_ubuntu:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: install packages
+      run: sudo apt-get update && sudo apt-get install -y g++ scons libsdl2-dev libpng-dev libjpeg-turbo8-dev libgl1-mesa-dev libglew-dev libopenal-dev libmad0-dev
+
+    - name: scons build
+      run: scons -j $(nproc)
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky
+        path: endless-sky
+      
+    - name: package
+      run: tar -czf endless-sky-amd64-nightly.tar.gz sounds images/ data/ license.txt keys.txt icon.png endless-sky credits.txt copyright changelog
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky-amd64-nightly.tar.gz
+        path: endless-sky-amd64-nightly.tar.gz
+
+    - name: scons install
+      run: scons -j $(nproc) install DESTDIR=AppDir
+    - name: correct absolute paths
+      run: sed -i -e 's#/usr#././#g' AppDir/usr/local/games/endless-sky 
+    - name: prepare icon
+      run: cp icons/icon_512x512.png endless-sky.png
+    - name: download linuxdeploy
+      run: wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O linuxdeploy && chmod +x linuxdeploy
+    - name: create appimage
+      run: ./linuxdeploy --appdir AppDir -d endless-sky.desktop -i endless-sky.png -e AppDir/usr/local/games/endless-sky --output appimage
+    - name: rename appimage
+      run: mv Endless_Sky*.AppImage EndlessSky-nightly.AppImage
+    - uses: actions/upload-artifact@master
+      with:
+        name: EndlessSky-nightly.AppImage.zip
+        path: EndlessSky-nightly.AppImage
     - uses: actions/upload-artifact@master
       with:
         name: endless-sky-win64-nightly.zip
