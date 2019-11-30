@@ -45,7 +45,11 @@ jobs:
         COPY .\mingw64\x86_64-w64-mingw32\lib\libgcc_s_seh-1.dll .
         COPY .\mingw64\x86_64-w64-mingw32\lib\libstdc++-6.dll .
          7z a endless-sky-win64-nightly.zip .\sounds\ .\images\ .\data\ *.dll license.txt keys.txt icon.png EndlessSky.exe credits.txt copyright changelog
-      shell: powershell
+      shell: powershell    
+    - uses: actions/upload-artifact@master
+      with:
+        name: endless-sky-win64-nightly.zip
+        path: endless-sky-win64-nightly.zip
 
   build_ubuntu:
 
@@ -86,7 +90,3 @@ jobs:
       with:
         name: EndlessSky-nightly.AppImage.zip
         path: EndlessSky-nightly.AppImage
-    - uses: actions/upload-artifact@master
-      with:
-        name: endless-sky-win64-nightly.zip
-        path: endless-sky-win64-nightly.zip
