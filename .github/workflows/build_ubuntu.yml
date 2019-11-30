@@ -36,8 +36,8 @@ jobs:
     - name: create appimage
       run: ./linuxdeploy --appdir AppDir -d endless-sky.desktop -i endless-sky.png -e AppDir/usr/local/games/endless-sky --output appimage
     - name: rename appimage
-      run: mv Endless_Sky*.AppImage EndlessSky.AppImage
+      run: mv Endless_Sky*.AppImage EndlessSky-nightly.AppImage
     - uses: actions/upload-artifact@master
       with:
-        name: EndlessSky.AppImage.zip
-        path: EndlessSky.AppImage
+        name: EndlessSky-nightly.AppImage.zip
+        path: EndlessSky-nightly.AppImage
