@@ -73,7 +73,7 @@ jobs:
         path: endless-sky
       
     - name: package
-      run: tar -czf endless-sky-amd64-nightly.tar.gz sounds images/ data/ license.txt keys.txt icon.png endless-sky credits.txt copyright changelog
+      run: tar -czf endless-sky-nightly-amd64.tar.gz sounds images/ data/ license.txt keys.txt icon.png endless-sky credits.txt copyright changelog
     - name: upload full zip
       uses: actions/upload-artifact@master
       with:
