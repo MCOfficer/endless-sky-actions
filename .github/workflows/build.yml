@@ -5,7 +5,8 @@ jobs:
   build_win:
     runs-on: windows-2019
     steps:
-    - uses: actions/checkout@v1
+    - name: checkout 
+      uses: actions/checkout@v1
     - name: fetch development libraries
       run: | 
         Invoke-WebRequest https://endless-sky.github.io/win64-dev.zip -OutFile win64-dev.zip
@@ -56,10 +57,11 @@ jobs:
     runs-on: ubuntu-18.04
     
     steps:
-    - uses: actions/checkout@v1
+    - name: checkout
+      uses: actions/checkout@v1
     - name: install packages
       run: sudo apt-get update && sudo apt-get install -y g++ scons libsdl2-dev libpng-dev libjpeg-turbo8-dev libgl1-mesa-dev libglew-dev libopenal-dev libmad0-dev
-
+    # TODO: adjust version numbers
     - name: scons build
       run: scons -j $(nproc)
     - uses: actions/upload-artifact@master
@@ -90,3 +92,17 @@ jobs:
       with:
         name: EndlessSky-nightly.AppImage.zip
         path: EndlessSky-nightly.AppImage
+
+  build_osx:
+    
+    runs-on: macOS-10.14
+    
+    steps:
+    - name: checkout
+      uses: actions/checkout@v1
+    - name: install packages
+      run: brew install libpng libjpeg-turbo libmad sdl2
+    #TODO: adjust version numbers
+    - name: build
+      run: xcodebuild
+    
