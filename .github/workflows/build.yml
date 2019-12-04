@@ -36,9 +36,10 @@ jobs:
         mingw32-make -f .winmake -j ($(Get-CIMInstance -Class 'CIM_Processor').NumberOfLogicalProcessors) dist
         COPY .\bin\pkgd\EndlessSky.exe EndlessSky.exe
       shell: powershell
-    - uses: actions/upload-artifact@master
+    - name: upload .exe
+      uses: actions/upload-artifact@master
       with:
-        name: EndlessSky.exe
+        name: EndlessSky-nightly-win64.exe
         path: EndlessSky.exe
     - name: package
       run: |
@@ -47,7 +48,8 @@ jobs:
         COPY .\mingw64\x86_64-w64-mingw32\lib\libstdc++-6.dll .
          7z a endless-sky-win64-nightly.zip .\sounds\ .\images\ .\data\ *.dll license.txt keys.txt icon.png EndlessSky.exe credits.txt copyright changelog
       shell: powershell    
-    - uses: actions/upload-artifact@master
+    - name: upload full zip
+      uses: actions/upload-artifact@master
       with:
         name: endless-sky-win64-nightly.zip
         path: endless-sky-win64-nightly.zip
@@ -64,17 +66,19 @@ jobs:
     # TODO: adjust version numbers
     - name: scons build
       run: scons -j $(nproc)
-    - uses: actions/upload-artifact@master
+    - name: upload binary
+      uses: actions/upload-artifact@master
       with:
-        name: endless-sky
+        name: endless-sky-nightly-amd64-binary
         path: endless-sky
       
     - name: package
       run: tar -czf endless-sky-amd64-nightly.tar.gz sounds images/ data/ license.txt keys.txt icon.png endless-sky credits.txt copyright changelog
-    - uses: actions/upload-artifact@master
+    - name: upload full zip
+      uses: actions/upload-artifact@master
       with:
-        name: endless-sky-amd64-nightly.tar.gz
-        path: endless-sky-amd64-nightly.tar.gz
+        name: endless-sky-nightly-amd64.tar.gz
+        path: endless-sky-nightly-amd64.tar.gz
 
     - name: scons install
       run: scons -j $(nproc) install DESTDIR=AppDir
@@ -87,11 +91,12 @@ jobs:
     - name: create appimage
       run: ./linuxdeploy --appdir AppDir -d endless-sky.desktop -i endless-sky.png -e AppDir/usr/local/games/endless-sky --output appimage
     - name: rename appimage
-      run: mv Endless_Sky*.AppImage EndlessSky-nightly.AppImage
-    - uses: actions/upload-artifact@master
+      run: mv Endless_Sky*.AppImage EndlessSky-nightly-amd64.AppImage
+    - name: upload appimage
+      uses: actions/upload-artifact@master
       with:
-        name: EndlessSky-nightly.AppImage.zip
-        path: EndlessSky-nightly.AppImage
+        name: EndlessSky-nightly-amd64.AppImage.zip
+        path: EndlessSky-nightly-amd64.AppImage
 
   build_osx:
     
@@ -105,4 +110,21 @@ jobs:
     #TODO: adjust version numbers
     - name: build
       run: xcodebuild
-    
+    - name: test
+      run: |
+        brew install tree
+        tree build/Release/
+    - name: adjust library paths
+      run: |
+        cd build/Release/Endless\ Sky.app/Contents/MacOS/
+        install_name_tool -id "@rpath/libpng16.16.dylib" /usr/local/lib/libpng16.16.dylib
+        install_name_tool -id "@rpath/libmad.0.2.1.dylib" /usr/local/lib/libmad.0.2.1.dylib
+        install_name_tool -id "@rpath/libturbojpeg.0.dylib" /usr/local/opt/libjpeg-turbo/lib/libturbojpeg.0.dylib
+        install_name_tool -id "@rpath/libSDL2-2.0.0.dylib" /usr/local/lib/libSDL2-2.0.0.dylib
+    - name: package
+      run: 7z a -tzip EndlessSky-nightly-OSX.zip build/Release/Endless\ Sky.app
+    - name: upload full zip
+      uses: actions/upload-artifact@master
+      with:
+        name: EndlessSky-nightly-OSX.zip
+        path: EndlessSky-nightly-OSX.zip
