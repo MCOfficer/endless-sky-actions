@@ -106,7 +106,7 @@ jobs:
     - name: checkout
       uses: actions/checkout@v1
     - name: install packages
-      run: brew install libpng libjpeg-turbo libmad sdl2
+      run: brew install libpng libjpeg-turbo libmad sdl2 7z
     #TODO: adjust version numbers
     - name: build
       run: xcodebuild
