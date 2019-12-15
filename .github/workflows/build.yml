@@ -108,19 +108,14 @@ jobs:
     - name: install packages
       run: brew install libpng libjpeg-turbo libmad sdl2 p7zip
     #TODO: adjust version numbers
-    - name: build
-      run: xcodebuild
-    - name: test
-      run: |
-        brew install tree
-        tree build/Release/
     - name: adjust library paths
       run: |
-        cd build/Release/Endless\ Sky.app/Contents/MacOS/
         install_name_tool -id "@rpath/libpng16.16.dylib" /usr/local/lib/libpng16.16.dylib
         install_name_tool -id "@rpath/libmad.0.2.1.dylib" /usr/local/lib/libmad.0.2.1.dylib
         install_name_tool -id "@rpath/libturbojpeg.0.dylib" /usr/local/opt/libjpeg-turbo/lib/libturbojpeg.0.dylib
         install_name_tool -id "@rpath/libSDL2-2.0.0.dylib" /usr/local/lib/libSDL2-2.0.0.dylib
+    - name: build
+      run: xcodebuild
     - name: package
       run: 7z a -tzip EndlessSky-nightly-OSX.zip build/Release/Endless\ Sky.app
     - name: upload full zip
@@ -128,5 +123,3 @@ jobs:
       with:
         name: EndlessSky-nightly-OSX.zip
         path: EndlessSky-nightly-OSX.zip
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v1
