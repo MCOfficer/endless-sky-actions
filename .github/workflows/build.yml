@@ -128,3 +128,5 @@ jobs:
       with:
         name: EndlessSky-nightly-OSX.zip
         path: EndlessSky-nightly-OSX.zip
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v1
